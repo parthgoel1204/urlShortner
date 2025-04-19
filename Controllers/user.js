@@ -22,10 +22,12 @@ async function handleUserLogin(req,res){
     })
   }
   // Set session
-  const sessionId = uuidv4();
-  setUser(sessionId,user);
-  res.cookie("uId", sessionId);
-  return res.redirect('/');
+  // const sessionId = uuidv4();
+  const token = setUser(user);
+  // setUser(sessionId,user);
+  // res.cookie("uId", sessionId);
+  // res.cookie("uId",token);
+  return res.json({token});
 }
 
 module.exports = {
