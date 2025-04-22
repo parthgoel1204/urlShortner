@@ -24,10 +24,12 @@ async function handleUserLogin(req,res){
   // Set session
   // const sessionId = uuidv4();
   const token = setUser(user);
+  res.cookie("token",token);
+  return res.redirect('/'); 
   // setUser(sessionId,user);
   // res.cookie("uId", sessionId);
   // res.cookie("uId",token);
-  return res.json({token});
+  // return res.json({token});
 }
 
 module.exports = {

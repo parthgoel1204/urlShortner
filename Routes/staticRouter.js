@@ -1,8 +1,17 @@
 const express = require('express');
 const URL = require('../Models/url');
 const router = express.Router();
+const {checkForAuthentication, restrictTo} = require('../middlewares/auth');
 
-router.get('/', async (req,res) => {
+router.get('/admin/urls', restrictTo(["ADMIN"]), async (req,res) => {
+  if(!req.user) return res.redirect('/login');
+  const allURL = await URL.find({});
+  return res.render('home', {
+    urls : allURL,
+  });
+})
+
+router.get('/',restrictTo(["NORMAL","ADMIN"]) , async (req,res) => {
   if(!req.user) return res.redirect('/login');
   const allURL = await URL.find({createdBy : req.user._id});
   return res.render('home', {

@@ -1,7 +1,7 @@
 const express = require('express');
 const urlRoute = require('./Routes/url');
 const cookiesParser = require('cookie-parser');
-const {restrictToLoggedInUser,checkAuth} = require('./middlewares/auth');
+const {checkForAuthentication, restrictTo} = require('./middlewares/auth');
 const staticRoute = require('./Routes/staticRouter');
 const userRoute = require('./Routes/user');
 const path = require('path');
@@ -19,6 +19,7 @@ app.set("Views", path.resolve("./Views"));
 app.use(express.json());
 app.use(express.urlencoded({extended : false}));
 app.use(cookiesParser());
+app.use(checkForAuthentication);
 
 // Routes
 // app.get("/test" , async(req,res) => {
@@ -27,9 +28,9 @@ app.use(cookiesParser());
 //     urls : allURL,
 //   });
 // })
-app.use("/url" ,restrictToLoggedInUser , urlRoute);
+app.use("/url",restrictTo(["NORMAL","ADMIN"]), urlRoute);
 app.get('/favicon.ico', (req, res) => res.status(204).end());
-app.use("/" , checkAuth , staticRoute);
+app.use("/" , staticRoute);
 app.use("/user" , userRoute);
 app.get("/:shortId", async (req, res) => {
   const shortId = req.params.shortId;
